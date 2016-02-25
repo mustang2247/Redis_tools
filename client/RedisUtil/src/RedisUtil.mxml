@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication minHeight="750"
+	minWidth="1200"
+	showStatusBar="false"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:views="com.hs.redisutil.views.*">
+
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace views "com.hs.redisutil.views.*";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		s|Label, s|RichEditableText
+		{
+			color: #FFFFFF;
+		}
+		
+		s|TextInput s|RichEditableText, s|Button s|Label
+		{
+			color: #000000;
+		}
+		
+	</fx:Style>
+
+	<views:MainView id="mainView" />
+
+</s:WindowedApplication>

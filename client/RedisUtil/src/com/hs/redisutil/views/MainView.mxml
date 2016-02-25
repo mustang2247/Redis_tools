@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<views:ViewBase logChanged="updateScrollPosition(outputWrapper);"
+	receiverLogChanged="updateScrollPosition(recoutputWrapper);"
+	xmlns:components="com.hs.redisutil.components.*"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:views="com.hs.redisutil.views.*">
+
+	<fx:Script>
+		<![CDATA[
+			import spark.components.HScrollBar;
+			import spark.core.NavigationUnit;
+
+			//=================================
+			// protected methods 
+			//=================================
+
+			protected function updateScrollPosition( wrapper : Group ) : void
+			{
+				if( wrapper.layout )
+				{
+					callLater( function() : void
+					{
+						var delta : Number = wrapper.layout.getVerticalScrollPositionDelta( NavigationUnit.END );
+						wrapper.layout.verticalScrollPosition += delta;
+					} );
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:Rect bottom="0"
+		left="0"
+		right="0"
+		top="0">
+
+		<s:fill>
+
+			<s:SolidColor color="0x000000" />
+		</s:fill>
+	</s:Rect>
+
+	<s:VGroup bottom="20"
+		gap="20"
+		left="20"
+		right="20"
+		top="20">
+
+		<s:HGroup verticalAlign="middle"
+			width="100%">
+
+			<s:Label text="HOST:" />
+
+			<s:TextInput id="hostInput"
+				text="127.0.0.1"
+				width="200" />
+
+			<s:Label text="PORT:" />
+
+			<s:TextInput id="portInput"
+				text="6379"
+				width="80" />
+
+			<s:Button click="redisModel.connect( hostInput.text, int( portInput.text ) );"
+				label="CONNECT" />
+
+			<s:Ellipse height="16"
+				width="16">
+
+				<s:fill>
+
+					<s:SolidColor color="{ redisModel.redis.connected ? 0x00ff00 : 0xff0000 }" />
+				</s:fill>
+			</s:Ellipse>
+
+			<s:Spacer width="100%" />
+
+			<s:Label text="PASSWORD:" />
+
+			<s:TextInput id="pwdInput"
+				enter="redisModel.authenticate( pwdInput.text );" />
+
+			<s:Button click="redisModel.authenticate( pwdInput.text );"
+				label="AUTHENTICATE" />
+		</s:HGroup>
+
+		<s:VGroup gap="4"
+			width="100%">
+
+			<s:HGroup width="100%">
+
+				<s:Label text="[ ex - subscribe ch1,ch2,ch3 ] :: [ esc: clear ] :: [ history: up,down ]" />
+
+				<s:Spacer width="100%" />
+
+				<s:HGroup>
+
+					<s:Label id="redisLink"
+						buttonMode="true"
+						click="redisModel.redisLink_clickHandler( event );"
+						mouseOut="redisLink.setStyle( 'textDecoration', 'none' );"
+						mouseOver="redisLink.setStyle( 'textDecoration', 'underline' );"
+						text="redis"
+						useHandCursor="true" />
+
+					<s:Label text="|" />
+
+					<s:Label id="redisCommandLink"
+						buttonMode="true"
+						click="redisModel.redisCommandLink_clickHandler( event );"
+						mouseOut="redisCommandLink.setStyle( 'textDecoration', 'none' );"
+						mouseOver="redisCommandLink.setStyle( 'textDecoration', 'underline' );"
+						text="commands"
+						useHandCursor="true" />
+				</s:HGroup>
+			</s:HGroup>
+
+			<s:TextInput id="commandInput"
+				enter="redisModel.execute( commandInput.text );commandInput.text = '';"
+				keyDown="redisModel.commandInput_keyDownHandler( event );"
+				width="100%" />
+		</s:VGroup>
+
+		<s:HGroup height="100%"
+			width="100%">
+
+
+			<s:Group height="100%"
+				width="50%">
+
+				<s:VGroup bottom="10"
+					gap="10"
+					left="10"
+					right="10"
+					top="10">
+
+					<s:Label text="OUTPUT" />
+
+					<s:Scroller id="scroller"
+						height="100%"
+						width="100%">
+
+						<s:Group id="outputWrapper"
+							clipAndEnableScrolling="true">
+
+							<s:RichEditableText id="output"
+								editable="false"
+								selectable="true"
+								text="{ redisModel.outputPageDetails ? redisModel.outputPageDetails : redisModel.log }"
+								width="100%" />
+						</s:Group>
+					</s:Scroller>
+
+					<s:Scroller bottom="0"
+						height="30"
+						horizontalScrollBar="{ new HScrollBar() }"
+						interactionMode="touch"
+						verticalScrollPolicy="off"
+						width="100%">
+
+						<components:PageLinkGroup id="outputPages"
+							activePageSelected="redisModel.outputPage_activePageSelectedHandler( event );"
+							color="0xFFFFFF"
+							pageSelected="redisModel.outputPage_selectedHandler( event );"
+							selectedColor="0xFFFF00"
+							width="100%" />
+					</s:Scroller>
+				</s:VGroup>
+			</s:Group>
+
+			<s:Group height="100%"
+				width="50%">
+
+				<s:Rect bottom="0"
+					left="0"
+					right="0"
+					top="0">
+
+					<s:fill>
+
+						<s:SolidColor color="0xFFFF00" />
+					</s:fill>
+				</s:Rect>
+
+				<s:VGroup bottom="10"
+					gap="10"
+					left="10"
+					right="10"
+					top="10">
+
+					<s:Label color="0x011681"
+						text="RECEIVER OUTPUT" />
+
+					<s:Scroller id="recscroller"
+						height="100%"
+						width="100%">
+
+						<s:Group id="recoutputWrapper"
+							clipAndEnableScrolling="true">
+
+							<s:RichEditableText id="recoutput"
+								color="0x011681"
+								editable="false"
+								selectable="true"
+								text="{ redisModel.recPageDetails ? redisModel.recPageDetails : redisModel.receiverLog }"
+								width="100%" />
+						</s:Group>
+					</s:Scroller>
+
+					<s:Scroller bottom="0"
+						height="30"
+						horizontalScrollBar="{ new HScrollBar() }"
+						interactionMode="touch"
+						verticalScrollPolicy="off"
+						width="100%">
+
+						<components:PageLinkGroup id="recPages"
+							activePageSelected="redisModel.recPage_activePageSelectedHandler( event );"
+							addedToStage="redisModel.initPageLinkGroups( outputPages, recPages );"
+							color="0x011681"
+							pageSelected="redisModel.recPage_selectedHandler( event );"
+							selectedColor="0x00FF00"
+							width="100%" />
+
+					</s:Scroller>
+				</s:VGroup>
+			</s:Group>
+		</s:HGroup>
+	</s:VGroup>
+</views:ViewBase>
